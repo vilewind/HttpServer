@@ -11,6 +11,7 @@
 =============================================================================*/
 
 #include "Util.h"
+#include <fcntl.h>
 
 int Socket::SocketUtil::createNoblockSocket() {
     return Util::ERRIF(__func__, 0, ::socket, AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, IPPROTO_TCP);
@@ -26,4 +27,10 @@ void Socket::SocketUtil::halfClose(int fd, int op) {
         err = "shutdown read and write";
     }
     Util::ERRIF(err, 0, ::shutdown, fd, op);
+}
+
+void Socket::SocketUtil::setNonblock(int fd) {
+	int flag = fcntl(fd, F_GETFL);
+	int new_flag = flag | O_NONBLOCK;
+	fcntl(fd, F_SETFL, new_flag);
 }

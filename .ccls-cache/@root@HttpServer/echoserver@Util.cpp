@@ -10,3 +10,20 @@
 #
 =============================================================================*/
 
+#include "Util.h"
+
+int Socket::SocketUtil::createNoblockSocket() {
+    return Util::ERRIF(__func__, 0, ::socket, AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, IPPROTO_TCP);
+}
+
+void Socket::SocketUtil::halfClose(int fd, int op) {
+    const char* err = nullptr;
+    if (op == SHUT_RD) {
+        err = "shutdown read";
+    } else if (op == SHUT_WR) {
+        err = "shutdown write";
+    } else {
+        err = "shutdown read and write";
+    }
+    Util::ERRIF(err, 0, ::shutdown, fd, op);
+}

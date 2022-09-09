@@ -131,6 +131,8 @@ namespace Socket
 		int createNoblockSocket();
 
 		void halfClose(int fd, int op);
+
+		void setNonblock(int fd);
 	}
 }
 
