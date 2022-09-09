@@ -26,14 +26,16 @@ Addr::Addr(const char* ip, uint16_t port) {
 Socket::Socket() 
     : m_fd(-1)
 {
-    m_fd = socket(AF_INET, SOCK_STREAM, 0);
-    // errif(m_fd == -1, "socket create error");
+    m_fd = ERRIF("socket", 0, socket, AF_INET, SOCK_STREAM, 0);
 }
 
 Socket::Socket(int fd) 
     : m_fd(fd) 
 {
-    // errif(fd < 0, "fd is illegal");
+	if (m_fd < 0) {
+		std::cerr << "fd is illegal";
+		exit(EXIT_FAILURE);
+	}
 }
 
 Socket::~Socket() {
@@ -43,13 +45,11 @@ Socket::~Socket() {
 }
 
 void Socket::bind(Addr& addr) {
-    ::bind(m_fd, (struct sockaddr*)&addr, addr.len);
-    // errif(::bind(m_fd, (struct sockaddr*)&addr, addr.len) < 0, "bind error");
+    ERRIF("bind", 0, ::bind, m_fd, (struct sockaddr*)&addr, addr.len);
 }
 
 void Socket::listen() {
-    ::listen(m_fd, 1024);
-    // errif(::listen(m_fd, 1024) < 0, "listen error");
+    ERRIF("listen", 0, ::listen, m_fd, 1024);
 }
 
 void Socket::setNonblock() {
@@ -59,7 +59,6 @@ void Socket::setNonblock() {
 }
 
 int Socket::accept(Addr& addr) {
-    int fd = ::accept(m_fd, (struct sockaddr*)&addr, &addr.len);
-    // errif(fd < 0, "accept error");
+    int fd = ERRIF("accept", 0, ::accept, m_fd, (struct sockaddr*)&addr, &addr.len);
     return fd;
 }

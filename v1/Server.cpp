@@ -23,7 +23,7 @@ Server::Server(EventLoop* loop)
     : el(loop) 
 {
     Socket *serv = new Socket();
-    Addr *addr = new Addr("127.0.0.1", 8888);
+    Addr *addr = new Addr("127.0.0.1", 34597);
     serv->bind(*addr);
     serv->listen();
     serv->setNonblock();
@@ -47,16 +47,17 @@ void Server::handleRead(int fd) {
             std::cout << nr << " bytes message from client fd:" << fd << std::endl;
             ::write(fd, buf, sizeof buf);
         } 
-        
+        /* 被EINTR信号中断，重新读取*/
         else if (nr < 0 && errno == EINTR) {
             std::cout << "client normally broken, continue" << std::endl;
             continue;
         } 
-        
+        /* 非阻塞模式下，暂时无数据可读*/
         else if (nr < 0 && (errno == EAGAIN || errno == EWOULDBLOCK)) {
             std::cout << "having gotten all data once" << std::endl;
             break;
         }
+        /* 客户端断开连接*/
         else if (nr == 0) {
             std::cout << "EOF, client break connection" << std::endl;
             ::close(fd);

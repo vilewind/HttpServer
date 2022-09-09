@@ -51,26 +51,26 @@ void Epoller::updateChannel(Channel* ch) {
 	 struct epoll_event ee;
 	 ee.data.ptr = static_cast<void*>(ch);
 	 ee.events = ch->getEvents();
-	 if (ch->isInEpoll()) {		
+	 if (!ch->isInEpoll()) {		
 		if (epoll_ctl(m_epfd, EPOLL_CTL_ADD, ch->getFd(), &ee) < 0) {
-		std::cerr << "epoll add error";
+		std::cerr << "epoll add error " << errno;
 		exit(-1);
 		}
 		ch->setInEpoll(true);
 	} 
-	// else {
-	// 	/* 已经存在与epoll树中的ch，若事件为-1则删除*/
-	// 	if (ch->getEvents() & -1) {
-	// 		if (epoll_ctl(m_epfd, EPOLL_CTL_DEL, ch->getFd(), &ee) < 0) {
-	// 			std::cerr << "epoll del error";
-	// 			exit(-1);
-	// 		}
-	// 	} else {
-	// 	if (epoll_ctl(m_epfd, EPOLL_CTL_MOD, ch->getFd(), &ee) < 0) {
-	// 		std::cerr << "epoll mod error";
-	// 		exit(-1);
-	// 	}
-	// }
-	// }
+	else {
+		/* 已经存在与epoll树中的ch，若事件为-1则删除*/
+		if (ch->getEvents() & -1) {
+			if (epoll_ctl(m_epfd, EPOLL_CTL_DEL, ch->getFd(), &ee) < 0) {
+				std::cerr << "epoll del error";
+				exit(-1);
+			}
+		} else {
+			if (epoll_ctl(m_epfd, EPOLL_CTL_MOD, ch->getFd(), &ee) < 0) {
+				std::cerr << "epoll mod error";
+				exit(-1);
+			}
+		}
+	}
 }
 
