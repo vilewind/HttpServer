@@ -16,6 +16,7 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <cerrno>
 
 using namespace Util;
 using namespace SocketUtil;
@@ -38,14 +39,14 @@ void Socket::listen() {
     ERRIF(__func__, 0, ::listen, m_fd, 1024);
 }
 
-int Socket::accept(Addr& addr) {
+int Socket::accept( Addr& addr) {
     return ERRIF(__func__, 0, ::accept, m_fd, (struct sockaddr*)&addr.addr, &addr.len);
 }
 
-int Socket::accept(int serv_fd, Addr& addr) {
-     return ERRIF(__func__, 0, ::accept, serv_fd, (struct sockaddr*)&addr.addr, &addr.len);
+// int Socket::accept(int serv_fd, Addr& addr) {
+//      return ERRIF(__func__, 0, ::accept, serv_fd, (struct sockaddr*)&addr.addr, &addr.len);
 
-}
+// }
 
 void Socket::shutdownWrite(bool flag) {
     if (flag) {
@@ -94,4 +95,18 @@ void Socket::setNonblock(int fd) {
 	int flag = fcntl(fd, F_GETFL);
 	int new_flag = flag | O_NONBLOCK;
 	fcntl(fd, F_SETFL, new_flag);
+}
+
+int Socket::getSocketError(int fd) 
+{
+    int opt;
+    socklen_t len = sizeof opt;
+    if (::getsockopt(fd, SOL_SOCKET, SO_ERROR, &opt, &len ) < 0)
+    {
+        return errno;
+    }
+    else 
+    {
+        return opt;
+    }
 }

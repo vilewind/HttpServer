@@ -45,6 +45,8 @@
         "type_traits": "cpp",
         "typeinfo": "cpp",
         "utility": "cpp",
-        "cerrno": "cpp"
+        "cerrno": "cpp",
+        "cstring": "cpp",
+        "cassert": "cpp"
     }
 }

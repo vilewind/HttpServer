@@ -73,7 +73,7 @@ namespace SocketUtil
 
 		int accept(Addr& addr);
 
-		static int accept(int, Addr& adr);
+		// static int accept(int, Addr& adr);
 		/**
 		 * @brief 支持半关闭，服务器半关闭写
 		*/
@@ -98,6 +98,8 @@ namespace SocketUtil
 		static void halfClose(int fd, int op);
 
 		static void setNonblock(int fd);
+
+		static int getSocketError(int fd);
 	private:	
 		const int m_fd;
 	};

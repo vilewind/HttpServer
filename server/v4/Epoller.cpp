@@ -41,6 +41,19 @@ void Epoller::updateChannel(Channel* ch) {
     }
 }
 
+void Epoller::removeChannel( Channel* ch ) 
+{
+    if ( ch->getInEPoll() ) 
+    {
+        Util::ERRIF( "epoll del", 0, epoll_ctl, m_epfd, EPOLL_CTL_DEL, ch->getFd(), nullptr );
+        ch->setInEpoll( false );
+    } 
+    else
+    {
+        std::cout << " the target with fd = " << ch->getFd() << " is not in epoll table" << std::endl;
+    } 
+}
+
 void Epoller::epollWait(ChLs& chs, int timeout) {
     chs.clear();
     int nfds = Util::ERRIF("epoll wait", 0, ::epoll_wait, m_epfd, &*eels.begin(), eels.capacity(), timeout);

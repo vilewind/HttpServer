@@ -20,6 +20,7 @@ class EventLoop;
 class Channel;
 
 using ConnectionCallback = std::function<void(int)>;
+using Callback = std::function<void()>;
 
 struct Acceptor
 {
@@ -28,11 +29,16 @@ struct Acceptor
     SocketUtil::Addr* addr;
     Channel* ch;
     ConnectionCallback connCb;
+    Callback errorCb;
 
     Acceptor(EventLoop*);
     ~Acceptor();
 
+    void updateChannelInAceptor();
+
     void acceptNewConnection();
+
+    void close();
 };
 
 #endif

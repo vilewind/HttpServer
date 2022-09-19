@@ -37,6 +37,8 @@ public:
 
 	void updateChannel(Channel*);
 
+	void removeChannel(Channel*);
+
 	static EventLoop* getEventLoopInCurrentThread();
 
 	bool isInCurrentThread() const { return std::this_thread::get_id() == m_tid; }
@@ -48,9 +50,9 @@ public:
 		}
 	}
 
-	void runInLoop(Task&);
+	void runInLoop( Task&& );
 
-	void queueInLoop(Task&);
+	void queueInLoop( Task&& );
 
 	void quit();
 private:

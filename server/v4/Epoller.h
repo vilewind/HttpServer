@@ -30,6 +30,8 @@ public:
 
     void updateChannel(Channel*);
 
+    void removeChannel(Channel*);
+
     void epollWait(ChLs&, int timeout=-1);
 
 protected:

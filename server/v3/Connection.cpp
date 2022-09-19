@@ -41,11 +41,11 @@ void Connection::echo(int fd) {
                 std::cout << "errno eintr" << std::endl;
                 continue;
             } else if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                std::cout << "errno eagain | ewouldblock" << std::endl;
+                // std::cout << "errno eagain | ewouldblock" << std::endl;
                 break;
             }
         } else if (n == 0) {
-            std::cout << "perr client disconneted" << std::endl;
+            std::cout << "peer client disconneted" << std::endl;
             Util::ERRIF("close", 0, ::close, fd);
         } else {
             ::write(fd, buf, sizeof buf);

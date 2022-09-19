@@ -48,8 +48,9 @@ void Coroutine::stackCopy(char* top) {
     assert(capacity <= CoPool::STACK_SIZE);
 
     if (m_capacity < capacity) {
-        if (m_stack)
-            delete[] m_stack;
+        // if (m_stack)
+        //     delete[] m_stack;
+        m_stack = nullptr;
         m_capacity = capacity;
         m_stack = new char[capacity]();
         }

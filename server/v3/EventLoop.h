@@ -30,6 +30,8 @@ public:
 	void loop();
 
 	void updateChannel(Channel*);
+
+	void removeChannel(Channel*);
 private:
 	std::unique_ptr<Epoller> m_epoller;
 	std::atomic<bool> m_looping;

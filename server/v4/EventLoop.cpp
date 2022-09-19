@@ -85,19 +85,25 @@ void EventLoop::updateChannel(Channel* ch) {
     std::cout << "add fd " << ch->getFd() << std::endl;
 }
 
+void EventLoop::removeChannel( Channel* ch )
+{
+	m_epoller->removeChannel(ch);
+	std::cout << "remove fd " << ch->getFd() << std::endl;
+}
+
 EventLoop* EventLoop::getEventLoopInCurrentThread() {
 	return t_eventLoopInCurrentThread;
 }
 
-void EventLoop::runInLoop(Task& task) {
+void EventLoop::runInLoop(Task&& task) {
 	if (isInCurrentThread()) {
 		task();
 	} else {
-		queueInLoop(task);
+		queueInLoop( std::move(task) );
 	}
 }
 
-void EventLoop::queueInLoop(Task& task) {
+void EventLoop::queueInLoop(Task&& task) {
 	{
 		std::lock_guard<std::mutex> locker(m_mtx);
 		m_tasks.push_back(task);
